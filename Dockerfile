@@ -1,30 +1,25 @@
 # -----------------------------------------------------------------------------
 # docker-mumble
 #
-# Builds a basic docker image that can run Mumble
-# (http://mumble.sourceforge.net/).
+# Tox mumble server
 #
-# Authors: Isaac Bythewood, Azim Sonawalla
-# Updated: Jan 21, 2015
-# Require: Docker (http://www.docker.io/)
+# Authors: Isaac Bythewood, Azim Sonawalla, Maxim Biro
 # -----------------------------------------------------------------------------
 
 FROM debian:jessie
 
-# Download and install everything from the repos.
 RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y mumble-server supervisor pwgen && \
+    apt-get autoremove && \
+    apt-get autoclean && \
     rm -rf /var/lib/apt/lists
 
-# Copy configuration
 ADD ./supervisor/supervisord.conf /etc/supervisor/supervisord.conf
-ADD ./supervisor/conf.d/murmurd.conf /etc/supervisor/conf.d/murmur.conf
-ADD ./mumble/mumble-server.ini /etc/mumble-server.ini
 ADD ./scripts/start /start
 RUN chmod +x /start
 
 EXPOSE 64738
-VOLUME ["/data"]
+VOLUME /data /cert
 
-ENTRYPOINT ["/start"]
+ENTRYPOINT /start

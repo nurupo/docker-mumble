@@ -2,8 +2,8 @@
 # -----------------------------------------------------------------------------
 # docker-mumble /start script
 #
-# Authors: Isaac Bythewood
-# Updated: Oct 20th, 2014
+# Authors: Isaac Bythewood, Maxim Biro
+# Updated: May 10th, 2016
 # -----------------------------------------------------------------------------
 
 
@@ -12,29 +12,50 @@ if [ ! -f /data/database/mumble-server.sqlite ]
 then
     mkdir -p /data/database/
     cp /var/lib/mumble-server/mumble-server.sqlite /data/database/mumble-server.sqlite
-    chown -R mumble-server:mumble-server /data/database/
 fi
 
+# Copy over the config file and modify it
+if [ ! -f /data/mumble-server.ini ]
+then
+    cp /etc/mumble-server.ini /data/mumble-server.ini
+
+    mkdir -p /data/log/
+
+    sed -i 's|database=.*|database=/data/database/mumble-server.sqlite|g' /data/mumble-server.ini
+    sed -i 's|logfile=.*|logfile=/data/log/mumble-server.log|g' /data/mumble-server.ini
+    sed -i 's|#*users=.*|users=10|g' /data/mumble-server.ini
+    sed -i 's|#*sslCert=.*|sslCert=/cert/chained.pem|g' /data/mumble-server.ini
+    sed -i 's|#*sslKey=.*|sslKey=/cert/domain.key|g' /data/mumble-server.ini
+    sed -i 's|#*bonjour=.*|bonjour=False|g' /data/mumble-server.ini
+    sed -i 's|#*certrequired=.*|certrequired=True|g' /data/mumble-server.ini
+    sed -i 's|#*sendversion=.*|sendversion=False|g' /data/mumble-server.ini
+
+    echo
+    echo "# ------------------------------------------------------------------------------"
+    echo "# Copied and modified mumble-server.ini in /data/mumble-server.ini"
+    echo "# Please check if the config file is acceptable"
+    echo "# ------------------------------------------------------------------------------"
+    echo
+fi
+
+# Mumble changes its user from root to mubmle-server, it needs to have access to the data dir
+chown -R mumble-server:mumble-server /data
 
 # Set Mumble SuperUser password
 if [ ! -f /data/superuser_password.txt ]
 then
     SUPERUSER_PASSWORD=`pwgen -c -n -1 15`
     echo $SUPERUSER_PASSWORD > /data/superuser_password.txt
-    murmurd -ini /etc/mumble-server.ini -supw $SUPERUSER_PASSWORD
+    murmurd -ini /data/mumble-server.ini -supw $SUPERUSER_PASSWORD
     sleep 3
     echo
     echo "# ------------------------------------------------------------------------------"
-    echo "# SuperUser Password"
-    echo "#"
-    echo "# Password: $SUPERUSER_PASSWORD"
-    echo "#"
+    echo "# SuperUser Password: $SUPERUSER_PASSWORD"
+    echo "# Copy of the password is stored in /data/superuser_password.txt"
     echo "# Connect to the server as SuperUser and setup an admin user."
     echo "# ------------------------------------------------------------------------------"
     echo
 fi
 
-
 # Run supervisor which maintains the mumble server
-/usr/bin/supervisord
-
+/usr/bin/supervisord -c /etc/supervisor/supervisord.conf
