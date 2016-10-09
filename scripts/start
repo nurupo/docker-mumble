@@ -1,11 +1,4 @@
 #!/bin/bash
-# -----------------------------------------------------------------------------
-# docker-mumble /start script
-#
-# Authors: Isaac Bythewood, Maxim Biro
-# Updated: October 9th, 2016
-# -----------------------------------------------------------------------------
-
 
 # Copy over the base database to our data directory if it doesn't exist
 if [ ! -f /data/database/mumble-server.sqlite ]

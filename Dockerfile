@@ -1,11 +1,3 @@
-# -----------------------------------------------------------------------------
-# docker-mumble
-#
-# Tox mumble server
-#
-# Authors: Isaac Bythewood, Azim Sonawalla, Maxim Biro
-# -----------------------------------------------------------------------------
-
 FROM debian:jessie
 
 # HTTP redirect often causes apt-get to fail as Docker would cache things from previous container run
