@@ -23,6 +23,6 @@ ADD ./scripts/start /start
 RUN chmod +x /start
 
 EXPOSE 64738
-VOLUME /data /cert
+VOLUME /data
 
 ENTRYPOINT /start

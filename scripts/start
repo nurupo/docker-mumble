@@ -3,7 +3,7 @@
 # docker-mumble /start script
 #
 # Authors: Isaac Bythewood, Maxim Biro
-# Updated: May 10th, 2016
+# Updated: October 9th, 2016
 # -----------------------------------------------------------------------------
 
 
@@ -24,8 +24,8 @@ then
     sed -i 's|database=.*|database=/data/database/mumble-server.sqlite|g' /data/mumble-server.ini
     sed -i 's|logfile=.*|logfile=/data/log/mumble-server.log|g' /data/mumble-server.ini
     sed -i 's|#*users=.*|users=10|g' /data/mumble-server.ini
-    sed -i 's|#*sslCert=.*|sslCert=/cert/chained.pem|g' /data/mumble-server.ini
-    sed -i 's|#*sslKey=.*|sslKey=/cert/domain.key|g' /data/mumble-server.ini
+    sed -i 's|#*sslCert=.*|sslCert=/data/cert/chained.pem|g' /data/mumble-server.ini
+    sed -i 's|#*sslKey=.*|sslKey=/data/cert/domain.key|g' /data/mumble-server.ini
     sed -i 's|#*bonjour=.*|bonjour=False|g' /data/mumble-server.ini
     sed -i 's|#*certrequired=.*|certrequired=True|g' /data/mumble-server.ini
     sed -i 's|#*sendversion=.*|sendversion=False|g' /data/mumble-server.ini
