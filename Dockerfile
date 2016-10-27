@@ -1,7 +1,7 @@
 FROM debian:jessie
 
 # HTTP redirect often causes apt-get to fail as Docker would cache things from previous container run
-RUN sed -i "s/httpredir.debian.org/ftp.us.debian.org/" /etc/apt/sources.list
+RUN sed -i "s/debian.org/ftp.us.debian.org/" /etc/apt/sources.list
 
 RUN apt-get update && \
     apt-get upgrade -y && \
